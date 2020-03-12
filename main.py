@@ -59,7 +59,11 @@ def run(html):
     soup = BeautifulSoup(html, "html.parser")
     download_images(soup)
     # TODO: Fonts, Video, etc.
-    print(soup.prettify())
+
+    # Export to file
+    with open("offline.html", "w") as f:
+        txt = soup.prettify()
+        f.write(txt)
 
 
 html = read_html()
