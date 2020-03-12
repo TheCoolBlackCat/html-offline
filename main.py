@@ -5,7 +5,14 @@ def read_html(file_name="index.html"):
         return f.read()
     return None
 
-html = read_html()
-soup = BeautifulSoup(html, "html.parser")
 
-print(soup.prettify())
+def run(html):
+    soup = BeautifulSoup(html, "html.parser")
+    print(soup.prettify())
+
+
+html = read_html()
+if html:
+    run(html)
+else:
+    print("An error occured reading the HTML file")
