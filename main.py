@@ -30,19 +30,14 @@ def download_resource(directory, url):
         print("Creating folder:", directory)
         Path(directory).mkdir(parents=True, exist_ok=True)
 
-    # Download resource
-    res = requests.get(url)
+    # Setup file_name
     file_name = file_name = url.split('/')[-1] # Retrieve filename from URL
     file_name = file_name.split('?')[0] # Remove query string (if applicable)
-
-    # mimetypes.init()
-    # file_type = mimetypes.guess_type(url)
-    # file_type = mimetypes.guess_extension(file_type)
-    # print(file_name, file_type)
 
     dst = path.join(directory, file_name)
     if not path.exists(dst): # Check if destination exists
         with open(dst, "wb") as f:
+            res = requests.get(url)
             res.raw.decode_content = True
             f.write(res.content) # Write image to file
             return file_name
