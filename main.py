@@ -2,13 +2,13 @@ from bs4 import BeautifulSoup
 from os import path
 from pathlib import Path
 import requests
-import mimetypes
+from sys import argv
 
 BASE_FOLDER = "res/"
 
 def download_images(soup):
     for img in soup.find_all("img"):
-        src = img.get("src")
+        src = img.get("src") # TODO: Use data-src
         if img and src:
             print("Downloading Image: ", src)
             file_path = download_resource("images", src)
@@ -65,8 +65,13 @@ def run(html):
         txt = soup.prettify()
         f.write(txt)
 
+html = read_html() # Default read
+if len(argv) == 2:
+    f = argv[1]
+    if path.exists(f) and path.isfile(f):
+        print("Using custom file: ", f)
+        html = read_html(f)    
 
-html = read_html()
 if html:
     run(html)
 else:
