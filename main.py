@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from os import path
 from pathlib import Path
 import requests
+import mimetypes
 
 BASE_FOLDER = "res/"
 
@@ -12,6 +13,7 @@ def download_images(soup):
             print("Downloading Image: ", src)
             # img["src"] = "new url"
             download_resource("images", src)
+
 
 def download_resource(directory, url):
     # Deal with base folder
@@ -30,19 +32,31 @@ def download_resource(directory, url):
 
     # Download resource
     res = requests.get(url)
-    dst = path.join(directory, "image.jpg")
-    if not path.exists(dst):
+    file_name = file_name = url.split('/')[-1] # Retrieve filename from URL
+    file_name = file_name.split('?')[0] # Remove query string (if applicable)
+
+    # mimetypes.init()
+    # file_type = mimetypes.guess_type(url)
+    # file_type = mimetypes.guess_extension(file_type)
+    # print(file_name, file_type)
+
+    dst = path.join(directory, file_name)
+    if not path.exists(dst): # Check if destination exists
         with open(dst, "wb") as f:
             res.raw.decode_content = True
-            f.write(res.content)
+            f.write(res.content) # Write image to file
+            return file_name
     else:
         print("File already exists at", dst, "- skipping")
+
+    return None
 
 
 def read_html(file_name="index.html"):
     with open(file_name, "r") as f:
         return f.read()
     return None
+
 
 
 def run(html):
