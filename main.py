@@ -11,8 +11,10 @@ def download_images(soup):
         src = img.get("src")
         if img and src:
             print("Downloading Image: ", src)
-            # img["src"] = "new url"
-            download_resource("images", src)
+            file_path = download_resource("images", src)
+            if file_path:
+                img["src"] = file_path
+                print("Replacing URL with local image:", file_path)
 
 
 def download_resource(directory, url):
@@ -40,11 +42,10 @@ def download_resource(directory, url):
             res = requests.get(url)
             res.raw.decode_content = True
             f.write(res.content) # Write image to file
-            return file_name
     else:
         print("File already exists at", dst, "- skipping")
 
-    return None
+    return dst
 
 
 def read_html(file_name="index.html"):
@@ -57,6 +58,8 @@ def read_html(file_name="index.html"):
 def run(html):
     soup = BeautifulSoup(html, "html.parser")
     download_images(soup)
+    # TODO: Fonts, Video, etc.
+    print(soup.prettify())
 
 
 html = read_html()
